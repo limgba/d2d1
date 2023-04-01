@@ -3,12 +3,12 @@
 #include <string>
 #include <time.h>
 
-#define TIMER_ID_1 1
+#define TIMER_ID_2 2
 
-class Wnd0
+class Wnd1
 {
 public:
-	static Wnd0& Instance();
+	static Wnd1& Instance();
 	static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow);
 	static ATOM MyRegisterClass(HINSTANCE hInstance);
 	void InitWnd(HWND hWnd);
@@ -22,9 +22,11 @@ public:
 	void OnTimer(HWND hWnd, WPARAM wParam, LPARAM lParam);
 	void OnTimer_1(HWND hWnd, LPARAM lParam);
 
-private:
-	clock_t m_last_clock = 0;
+public:
 	static HANDLE hThread1;
 	static WCHAR szTitle[];
 	static WCHAR szWindowClass[];
+
+private:
+	clock_t m_last_clock = 0;
 };

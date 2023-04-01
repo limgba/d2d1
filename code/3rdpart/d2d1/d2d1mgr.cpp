@@ -38,15 +38,12 @@ int D2D1Mgr::InitD2D1Mgr()
     {
         return h_result;
     }
+
     return 0;
 }
 
-int D2D1Mgr::InitD2D1MgrFromWindows(HWND hWnd, int windows_index)
+int D2D1Mgr::InitD2D1MgrFromWindows(HWND hWnd)
 {
-    if (windows_index < 0 || windows_index >= MAX_WINDOWS_COUNT)
-    {
-        return -1;
-    }
     HRESULT h_result;
 
     RECT rect;
@@ -55,14 +52,14 @@ int D2D1Mgr::InitD2D1MgrFromWindows(HWND hWnd, int windows_index)
     h_result = m_factory->CreateHwndRenderTarget(
         D2D1::RenderTargetProperties(),
         D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rect.right - rect.left, rect.bottom - rect.top)),
-        &m_render_target_list[windows_index]
+        &m_render_target
     );
     if (S_OK != h_result)
     {
         return h_result;
     }
 
-    h_result = m_render_target_list[windows_index]->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::WhiteSmoke), &m_brush_list[windows_index]);
+    h_result = m_render_target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::WhiteSmoke), &m_brush);
     if (S_OK != h_result)
     {
         return h_result;
@@ -89,34 +86,20 @@ int D2D1Mgr::LoadAllImage()
 
 void D2D1Mgr::DestroyD2D1Mgr()
 {
-    for (auto& pair : m_image_map)
-    {
-        if (nullptr == pair.second)
-        {
-            continue;
-        }
-        pair.second->Release();
-    }
+	for (auto& pair : m_image_map)
+	{
+		if (nullptr == pair.second)
+		{
+			continue;
+		}
+		pair.second->Release();
+	}
     m_image_factory->Release();
 
     m_text_format->Release();
     m_write_factory->Release();
-    for (auto& brush : m_brush_list)
-    {
-        if (nullptr == brush)
-        {
-            continue;
-        }
-        brush->Release();
-    }
-    for (auto& runder_target : m_render_target_list)
-    {
-        if (nullptr == runder_target)
-        {
-            continue;
-        }
-        runder_target->Release();
-    }
+	m_brush->Release();
+	m_render_target->Release();
     m_factory->Release();
 }
 
@@ -152,7 +135,7 @@ int D2D1Mgr::LoadImageFromFile(const std::wstring& file_name)
     }
 
     ID2D1Bitmap* bitmap = NULL;
-    h_result = m_render_target_list[0]->CreateBitmapFromWicBitmap(fmtcovter, NULL, &bitmap);
+    h_result = m_render_target->CreateBitmapFromWicBitmap(fmtcovter, NULL, &bitmap);
     if (S_OK != h_result)
     {
         return h_result;
@@ -171,14 +154,14 @@ ID2D1Factory* D2D1Mgr::GetID2D1Factory()
     return m_factory;
 }
 
-ID2D1HwndRenderTarget* D2D1Mgr::GetID2D1HwndRenderTarget(int index)
+ID2D1HwndRenderTarget* D2D1Mgr::GetID2D1HwndRenderTarget()
 {
-    return m_render_target_list[index];
+    return m_render_target;
 }
 
-ID2D1SolidColorBrush* D2D1Mgr::GetID2D1SolidColorBrush(int index)
+ID2D1SolidColorBrush* D2D1Mgr::GetID2D1SolidColorBrush()
 {
-    return m_brush_list[index];
+    return m_brush;
 }
 
 IDWriteFactory* D2D1Mgr::GetIDWriteFactory()

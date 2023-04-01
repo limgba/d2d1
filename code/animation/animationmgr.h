@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <time.h>
 class Animation;
 
 // Ã¿ÃëÖ¡Êý
@@ -16,7 +17,7 @@ public:
 	static AnimationMgr& Instance();
 	void DeleteAllAnimation();
 
-	void Play();
+	void Play(clock_t now_clock);
 	void PushAnimation(Animation* animation);
 	void DeleteAnimation(Animation* delete_animation);
 	size_t AnimationSize();
@@ -25,6 +26,5 @@ public:
 	
 private:
 	bool m_dirty_layer = false;
-	int m_play_count = 0;
 	std::vector<Animation*> m_animation_list;
 };

@@ -16,25 +16,24 @@ public:
 	static D2D1Mgr& Instance();
 
 	int InitD2D1Mgr();
-	int InitD2D1MgrFromWindows(HWND hWnd, int windows_index);
+	int InitD2D1MgrFromWindows(HWND hWnd);
 	int LoadAllImage();
 	void DestroyD2D1Mgr();
 	int LoadImageFromFile(const std::wstring& file_name);
 
 	ID2D1Factory* GetID2D1Factory();
-	ID2D1HwndRenderTarget* GetID2D1HwndRenderTarget(int index = 0);
+	ID2D1HwndRenderTarget* GetID2D1HwndRenderTarget();
 
-	ID2D1SolidColorBrush* GetID2D1SolidColorBrush(int index = 0);
+	ID2D1SolidColorBrush* GetID2D1SolidColorBrush();
 	IDWriteFactory* GetIDWriteFactory();
 	IDWriteTextFormat* GetIDWriteTextFormat();
 
 	IWICImagingFactory* GetIWICImagingFactory();
 	ID2D1Bitmap* GetID2D1Bitmap(const std::wstring& file_name);
 private:
-	static const int MAX_WINDOWS_COUNT = 2;
 	ID2D1Factory* m_factory = nullptr;
-	ID2D1HwndRenderTarget* m_render_target_list[MAX_WINDOWS_COUNT] = {};
-	ID2D1SolidColorBrush* m_brush_list[MAX_WINDOWS_COUNT] = {};
+	ID2D1HwndRenderTarget* m_render_target = nullptr;
+	ID2D1SolidColorBrush* m_brush = nullptr;
 	IDWriteFactory* m_write_factory = nullptr;
 	IDWriteTextFormat* m_text_format = nullptr;
 
