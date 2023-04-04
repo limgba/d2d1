@@ -3,11 +3,12 @@
 #include <string>
 #include <time.h>
 
-#define TIMER_ID_1 1
 
 class Wnd0
 {
 public:
+	const static size_t WINDOWS_INDEX = 0;
+	const static UINT_PTR TIMER_ID_1 = 1;
 	static Wnd0& Instance();
 	static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow);
 	static ATOM MyRegisterClass(HINSTANCE hInstance);
@@ -24,7 +25,7 @@ public:
 
 private:
 	clock_t m_last_clock = 0;
-	static HANDLE hThread1;
+	HANDLE hThread1 = nullptr;
 	static WCHAR szTitle[];
 	static WCHAR szWindowClass[];
 };

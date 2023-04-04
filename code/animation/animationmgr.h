@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include <time.h>
+#include <d2d1.h>
+#include <unordered_map>
 class Animation;
 
 // Ã¿ÃëÖ¡Êý
@@ -15,16 +17,21 @@ class AnimationMgr
 {
 public:
 	static AnimationMgr& Instance();
-	void DeleteAllAnimation();
+	void InitAnimationMgr(size_t index);
+	void DestroyAnimationMgr();
 
-	void Play(clock_t now_clock);
-	void PushAnimation(Animation* animation);
-	void DeleteAnimation(Animation* delete_animation);
-	size_t AnimationSize();
-	void SortAnimation();
-	void DirtyLayer();			
+	void Play(ID2D1HwndRenderTarget* render_target, size_t index, clock_t now_clock);
+	void PushAnimation(size_t index, Animation* animation);
+	void DeleteAnimation(size_t index, Animation* delete_animation);
+	size_t AnimationSize(size_t index);
+	void SortAnimation(size_t index);
+	void DirtyLayer(size_t index);			
 	
 private:
-	bool m_dirty_layer = false;
-	std::vector<Animation*> m_animation_list;
+	struct AnimationData
+	{
+		bool dirty_layer = false;
+		std::vector<Animation*> animation_list;
+	};
+	std::vector<AnimationData> m_animation_data_list;
 };

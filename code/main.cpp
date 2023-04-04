@@ -1,6 +1,9 @@
 #include <windows.h>
 #include "windows/wnd0.h"
 #include "windows/wnd1.h"
+#include "3rdpart/d2d1/d2d1mgr.h"
+#include "animation/animationmgr.h"
+#include "obj/objmgr.h"
 
 //#define USE_PEEKMESSAGE 1
 

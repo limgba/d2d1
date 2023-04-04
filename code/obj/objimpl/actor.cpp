@@ -15,7 +15,7 @@ void Actor::OnImpact(Obj* obj)
 	{
 	case BITMAP_IMAGE_OBJ_TYPE_SKILL:
 	{
-		ControlObjMgr::Instance().SetObjCoordinate(0, 0);
+		ControlObjMgr::Instance().SetObjCoordinate(this->GetControlIndex(), 0, 0);
 	}
 	break;
 	case BITMAP_IMAGE_OBJ_TYPE_MONSTER:
@@ -49,22 +49,22 @@ void Actor::OnImpact(Obj* obj)
 		{
 			if (distance_x > 0)
 			{
-				ControlObjMgr::Instance().ChangeObjCoordinate(ddx + offset, 0);
+				ControlObjMgr::Instance().ChangeObjCoordinate(this->GetControlIndex(), ddx + offset, 0);
 			}
 			else
 			{
-				ControlObjMgr::Instance().ChangeObjCoordinate(-ddx - offset, 0);
+				ControlObjMgr::Instance().ChangeObjCoordinate(this->GetControlIndex(), -ddx - offset, 0);
 			}
 		}
 		if (ddy < add)
 		{
 			if (distance_y > 0)
 			{
-				ControlObjMgr::Instance().ChangeObjCoordinate(0, ddy + offset);
+				ControlObjMgr::Instance().ChangeObjCoordinate(this->GetControlIndex(), 0, ddy + offset);
 			}
 			else
 			{
-				ControlObjMgr::Instance().ChangeObjCoordinate(0, -ddy - offset);
+				ControlObjMgr::Instance().ChangeObjCoordinate(this->GetControlIndex(), 0, -ddy - offset);
 			}
 		}
 	}

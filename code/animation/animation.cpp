@@ -51,8 +51,12 @@ void Animation::SetLoop(bool is_loop)
 	m_is_loop = is_loop;
 }
 
-void Animation::Play(clock_t now_clock)
+void Animation::Play(ID2D1HwndRenderTarget* render_target, clock_t now_clock)
 {
+	if (nullptr == render_target)
+	{
+		return;
+	}
 	if (m_index >= m_image_list.size())
 	{
 		return;
@@ -62,6 +66,22 @@ void Animation::Play(clock_t now_clock)
 	{
 		return;
 	}
+	ID2D1Bitmap* bitmap = image_base->GetID2D1Bitmap();
+	if (nullptr == bitmap)
+	{
+		return;
+	}
+
+	//do
+	//{
+	//	HWND hWnd = render_target->GetHwnd();
+	//	const std::wstring file_name = image_base->GetPath();
+	//	ID2D1Bitmap* check_bitmap = D2D1Mgr::Instance().GetID2D1Bitmap(hWnd, file_name);
+	//	if (bitmap != check_bitmap)
+	//	{
+	//		return;
+	//	}
+	//} while (false);
 
 	if (image_base->GetIntervalMs() > 0 && now_clock - m_clock >= image_base->GetIntervalMs())
 	{
@@ -81,16 +101,7 @@ void Animation::Play(clock_t now_clock)
 			return;
 		}
 	}
-	ID2D1Bitmap* bitmap = image_base->GetID2D1Bitmap();
-	if (nullptr == bitmap)
-	{
-		return;
-	}
-	ID2D1HwndRenderTarget* render_target = D2D1Mgr::Instance().GetID2D1HwndRenderTarget();
-	if (nullptr == render_target)
-	{
-		return;
-	}
+
 	D2D1_SIZE_U size = bitmap->GetPixelSize();
 	int x = m_obj->x();
 	int y = m_obj->y();

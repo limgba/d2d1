@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <time.h>
+#include <d2d1.h>
 
 class ImageBase;
 class Obj;
@@ -14,7 +15,7 @@ public:
 	void PushImageBase(ImageBase* image_base);
 	void InitClock();
 	void SetLoop(bool is_loop);
-	void Play(clock_t now_clock);
+	void Play(ID2D1HwndRenderTarget* render_target, clock_t now_clock);
 	void SetLayer(double layer);
 	double GetLayer() const;
 	const std::vector<ImageBase*>& GetImageVec();

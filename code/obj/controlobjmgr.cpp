@@ -32,23 +32,35 @@ void ControlObjMgr::RemoveControlObj(Obj* obj)
 	m_control_obj_list.erase(delete_it, m_control_obj_list.end());
 }
 
-void ControlObjMgr::SetObjCoordinate(int x, int y)
+void ControlObjMgr::SetObjCoordinate(size_t index, int x, int y)
 {
-	for (auto* obj : m_control_obj_list)
+	if (index >= m_control_obj_list.size())
 	{
-		obj->SetCoordinate(x, y);
-		RigidBodyMgr::Instance().OnObjMove(obj);
+		return;
 	}
+	Obj* obj = m_control_obj_list[index];
+	if (nullptr == obj)
+	{
+		return;
+	}
+	obj->SetCoordinate(x, y);
+	RigidBodyMgr::Instance().OnObjMove(obj);
 	RigidBodyMgr::Instance().CollisionCheck();
 }
 
-void ControlObjMgr::ChangeObjCoordinate(int x, int y)
+void ControlObjMgr::ChangeObjCoordinate(size_t index, int x, int y)
 {
-	for (auto* obj : m_control_obj_list)
+	if (index >= m_control_obj_list.size())
 	{
-		obj->SetCoordinate(obj->x() + x, obj->y() + y);
-		RigidBodyMgr::Instance().OnObjMove(obj);
+		return;
 	}
+	Obj* obj = m_control_obj_list[index];
+	if (nullptr == obj)
+	{
+		return;
+	}
+	obj->SetCoordinate(obj->x() + x, obj->y() + y);
+	RigidBodyMgr::Instance().OnObjMove(obj);
 	RigidBodyMgr::Instance().CollisionCheck();
 }
 

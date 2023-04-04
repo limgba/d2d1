@@ -1,5 +1,6 @@
 #include "d2d1mgr.h"
 
+
 D2D1Mgr& D2D1Mgr::Instance()
 {
 	static D2D1Mgr mgr;
@@ -42,9 +43,15 @@ int D2D1Mgr::InitD2D1Mgr()
     return 0;
 }
 
-int D2D1Mgr::InitD2D1MgrFromWindows(HWND hWnd)
+int D2D1Mgr::InitD2D1MgrFromWindows(HWND hWnd, size_t index)
 {
     HRESULT h_result;
+    if (index >= m_windows_dependent_list.size())
+    {
+        m_windows_dependent_list.resize(index + 1);
+    }
+    WindowsDependent* windows_dependent = new WindowsDependent();
+    m_windows_dependent_list[index] = windows_dependent;
 
     RECT rect;
     GetClientRect(hWnd, &rect);
@@ -52,14 +59,14 @@ int D2D1Mgr::InitD2D1MgrFromWindows(HWND hWnd)
     h_result = m_factory->CreateHwndRenderTarget(
         D2D1::RenderTargetProperties(),
         D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rect.right - rect.left, rect.bottom - rect.top)),
-        &m_render_target
+        &windows_dependent->render_target
     );
     if (S_OK != h_result)
     {
         return h_result;
     }
 
-    h_result = m_render_target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::WhiteSmoke), &m_brush);
+    h_result = windows_dependent->render_target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::WhiteSmoke), &windows_dependent->brush);
     if (S_OK != h_result)
     {
         return h_result;
@@ -67,44 +74,53 @@ int D2D1Mgr::InitD2D1MgrFromWindows(HWND hWnd)
     return 0;
 }
 
-int D2D1Mgr::LoadAllImage()
+int D2D1Mgr::LoadAllImage(size_t index)
 {
-    LoadImageFromFile(L"background/ndmz.bmp");
-    LoadImageFromFile(L"picture/white.bmp");
-    LoadImageFromFile(L"picture/white1.bmp");
-    LoadImageFromFile(L"picture/jiantou0.bmp");
-    LoadImageFromFile(L"picture/jiantou1.bmp");
-    LoadImageFromFile(L"picture/xiaojiantou0.bmp");
-    LoadImageFromFile(L"picture/xiaojiantou1.bmp");
-    LoadImageFromFile(L"picture/xiaojiantou2.bmp");
-    LoadImageFromFile(L"picture/xiaojiantou3.bmp");
-    LoadImageFromFile(L"picture/xiaojiantou4.bmp");
-    LoadImageFromFile(L"picture/xiaojiantou5.bmp");
-    LoadImageFromFile(L"picture/xiaojiantou6.bmp");
+    WindowsDependent* windows_dependent = this->GetWindowsDependent(index);
+    if (nullptr == windows_dependent)
+    {
+        return -1;
+    }
+
+    LoadImageFromFile(windows_dependent, L"background/ndmz.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/white.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/white1.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/jiantou0.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/jiantou1.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/xiaojiantou0.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/xiaojiantou1.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/xiaojiantou2.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/xiaojiantou3.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/xiaojiantou4.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/xiaojiantou5.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/xiaojiantou6.bmp");
     return 0;
 }
 
 void D2D1Mgr::DestroyD2D1Mgr()
 {
-	for (auto& pair : m_image_map)
-	{
-		if (nullptr == pair.second)
-		{
-			continue;
-		}
-		pair.second->Release();
-	}
-    m_image_factory->Release();
+    for (auto& windows_dependent : m_windows_dependent_list)
+    {
+        if (nullptr == windows_dependent)
+        {
+            continue;
+        }
 
+        delete windows_dependent;
+        windows_dependent = nullptr;
+    }
+    m_image_factory->Release();
     m_text_format->Release();
     m_write_factory->Release();
-	m_brush->Release();
-	m_render_target->Release();
     m_factory->Release();
 }
 
-int D2D1Mgr::LoadImageFromFile(const std::wstring& file_name)
+int D2D1Mgr::LoadImageFromFile(WindowsDependent* windows_dependent, const std::wstring& file_name)
 {
+    if (nullptr == windows_dependent)
+    {
+        return -1;
+    }
     HRESULT h_result;
 
     IWICBitmapDecoder* bitmapdecoder = NULL;
@@ -135,12 +151,12 @@ int D2D1Mgr::LoadImageFromFile(const std::wstring& file_name)
     }
 
     ID2D1Bitmap* bitmap = NULL;
-    h_result = m_render_target->CreateBitmapFromWicBitmap(fmtcovter, NULL, &bitmap);
+    h_result = windows_dependent->render_target->CreateBitmapFromWicBitmap(fmtcovter, NULL, &bitmap);
     if (S_OK != h_result)
     {
         return h_result;
     }
-    m_image_map.emplace(full_file_name, bitmap);
+    windows_dependent->image_map.emplace(full_file_name, bitmap);
 
     fmtcovter->Release();
     pframe->Release();
@@ -154,14 +170,13 @@ ID2D1Factory* D2D1Mgr::GetID2D1Factory()
     return m_factory;
 }
 
-ID2D1HwndRenderTarget* D2D1Mgr::GetID2D1HwndRenderTarget()
+WindowsDependent* D2D1Mgr::GetWindowsDependent(size_t index)
 {
-    return m_render_target;
-}
-
-ID2D1SolidColorBrush* D2D1Mgr::GetID2D1SolidColorBrush()
-{
-    return m_brush;
+    if (index >= m_windows_dependent_list.size())
+    {
+        return nullptr;
+    }
+    return m_windows_dependent_list[index];
 }
 
 IDWriteFactory* D2D1Mgr::GetIDWriteFactory()
@@ -179,14 +194,32 @@ IWICImagingFactory* D2D1Mgr::GetIWICImagingFactory()
     return m_image_factory;
 }
 
-ID2D1Bitmap* D2D1Mgr::GetID2D1Bitmap(const std::wstring& file_name)
+ID2D1Bitmap* D2D1Mgr::GetID2D1Bitmap(size_t index, const std::wstring& file_name)
 {
+    auto* windows_dependent = this->GetWindowsDependent(index);
+    if (nullptr == windows_dependent)
+    {
+        return nullptr;
+    }
     std::wstring full_file_name = IMAGE_PATH_HEAD + file_name;
-    auto it = m_image_map.find(full_file_name);
-    if (it == m_image_map.end())
+    auto it = windows_dependent->image_map.find(full_file_name);
+    if (it == windows_dependent->image_map.end())
     {
         return nullptr;
     }
     return it->second;
 }
 
+WindowsDependent::~WindowsDependent()
+{
+    for (auto& pair : this->image_map)
+    {
+        if (nullptr == pair.second)
+        {
+            continue;
+        }
+        pair.second->Release();
+    }
+    this->brush->Release();
+    this->render_target->Release();
+}

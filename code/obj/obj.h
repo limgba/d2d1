@@ -40,6 +40,8 @@ public:
 	int GetObjId() const;
 	void SetIsRigidbody(bool is_rigid_body);
 	bool IsRigidBody() const;
+	void SetControlIndex(size_t index);
+	size_t GetControlIndex();
 
 private:
 	static int m_auto_inc_id;
@@ -48,4 +50,5 @@ private:
 	int m_x;
 	int m_y;
 	bool m_is_rigid_body;
+	size_t m_control_index;
 };

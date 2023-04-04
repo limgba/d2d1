@@ -12,7 +12,6 @@
 #include "obj/objimpl/skill.h"
 #include "obj/objimpl/monster.h"
 
-HANDLE Wnd0::hThread1 = nullptr;
 WCHAR Wnd0::szTitle[] = L"d2d1";
 WCHAR Wnd0::szWindowClass[] = L"d2d1";
 
@@ -87,16 +86,18 @@ LRESULT CALLBACK Wnd0::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
     case WM_CREATE:
     {
 		D2D1Mgr::Instance().InitD2D1Mgr();
-		D2D1Mgr::Instance().InitD2D1MgrFromWindows(hWnd);
-		D2D1Mgr::Instance().LoadAllImage();
+		D2D1Mgr::Instance().InitD2D1MgrFromWindows(hWnd, WINDOWS_INDEX);
+		D2D1Mgr::Instance().LoadAllImage(WINDOWS_INDEX);
+		AnimationMgr::Instance().InitAnimationMgr(WINDOWS_INDEX);
         Wnd0::Instance().InitWnd(hWnd);
     }
     break;
     case WM_DESTROY:
     {
-		D2D1Mgr::Instance().DestroyD2D1Mgr();
         Wnd0::Instance().DestroyWnd(hWnd);
-		CloseHandle(hThread1);
+		D2D1Mgr::Instance().DestroyD2D1Mgr();
+		AnimationMgr::Instance().DestroyAnimationMgr();
+		ObjMgr::Instance().DeleteAllObj();
         PostQuitMessage(0);
     }
     break;
@@ -128,7 +129,12 @@ unsigned Wnd0::Thread1(void* argv)
 
 void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 {
-	ID2D1HwndRenderTarget* render_target = D2D1Mgr::Instance().GetID2D1HwndRenderTarget();
+	WindowsDependent* windows_dependent = D2D1Mgr::Instance().GetWindowsDependent(WINDOWS_INDEX);
+	if (nullptr == windows_dependent)
+	{
+		return;
+	}
+	ID2D1HwndRenderTarget* render_target = windows_dependent->render_target;
 	if (!render_target)
 	{
 		return;
@@ -143,11 +149,12 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 	D2D1_SIZE_F size = render_target->GetSize();
 
 	// Draw Image
-	if (0 == AnimationMgr::Instance().AnimationSize())
+	if (0 == m_last_clock)
 	{
 		do
 		{
-			ID2D1Bitmap* bitmap = D2D1Mgr::Instance().GetID2D1Bitmap(L"background/ndmz.bmp");
+			std::wstring path = L"background/ndmz.bmp";
+			ID2D1Bitmap* bitmap = D2D1Mgr::Instance().GetID2D1Bitmap(WINDOWS_INDEX, path);
 			if (nullptr == bitmap)
 			{
 				break;
@@ -156,12 +163,13 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 			image->SetID2D1Bitmap(bitmap);
 			image->SetIntervalMs(0);
 			image->SetNextIndex(0);
+			image->SetPath(path);
 
 			Animation* animation = new Animation();
 			animation->InitClock();
 			animation->SetLayer(0.0);
 			animation->PushImageBase(image);
-			AnimationMgr::Instance().PushAnimation(animation);
+			AnimationMgr::Instance().PushAnimation(WINDOWS_INDEX, animation);
 
 			Obj* obj = new Scene();
 			obj->SetAnimation(animation);
@@ -171,7 +179,8 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 
 		do
 		{
-			ID2D1Bitmap* bitmap = D2D1Mgr::Instance().GetID2D1Bitmap(L"picture/white.bmp");
+			std::wstring path = L"picture/white.bmp";
+			ID2D1Bitmap* bitmap = D2D1Mgr::Instance().GetID2D1Bitmap(WINDOWS_INDEX, path);
 			if (nullptr == bitmap)
 			{
 				break;
@@ -180,17 +189,19 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 			image->SetID2D1Bitmap(bitmap);
 			image->SetIntervalMs(0);
 			image->SetNextIndex(0);
+			image->SetPath(path);
 
 			Animation* animation = new Animation();
 			animation->InitClock();
 			animation->SetLayer(1.0);
 			animation->PushImageBase(image);
 
-			AnimationMgr::Instance().PushAnimation(animation);
+			AnimationMgr::Instance().PushAnimation(WINDOWS_INDEX, animation);
 
 			Obj* obj = new Actor();
 			obj->SetIsRigidbody(true);
 			obj->SetAnimation(animation);
+			obj->SetControlIndex(0);
 			animation->SetObj(obj);
 			ObjMgr::Instance().AddObj(obj);
 			ControlObjMgr::Instance().PushControlObj(obj);
@@ -198,7 +209,8 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 
 		do
 		{
-			ID2D1Bitmap* bitmap = D2D1Mgr::Instance().GetID2D1Bitmap(L"picture/white1.bmp");
+			std::wstring path = L"picture/white1.bmp";
+			ID2D1Bitmap* bitmap = D2D1Mgr::Instance().GetID2D1Bitmap(WINDOWS_INDEX, path);
 			if (nullptr == bitmap)
 			{
 				break;
@@ -208,13 +220,14 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 			image->SetID2D1Bitmap(bitmap);
 			image->SetIntervalMs(0);
 			image->SetNextIndex(0);
+			image->SetPath(path);
 
 			Animation* animation = new Animation();
 			animation->InitClock();
 			animation->SetLayer(2.0);
 			animation->PushImageBase(image);
 
-			AnimationMgr::Instance().PushAnimation(animation);
+			AnimationMgr::Instance().PushAnimation(WINDOWS_INDEX, animation);
 
 			Obj* obj = new Monster();
 			obj->SetAnimation(animation);
@@ -232,7 +245,7 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 			for (int i = 0; i < 7; ++i)
 			{
 				std::wstring path = L"picture/xiaojiantou" + std::to_wstring(i) + L".bmp";
-				ID2D1Bitmap* bitmap = D2D1Mgr::Instance().GetID2D1Bitmap(path);
+				ID2D1Bitmap* bitmap = D2D1Mgr::Instance().GetID2D1Bitmap(WINDOWS_INDEX, path);
 				if (nullptr == bitmap)
 				{
 					continue;
@@ -242,9 +255,10 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 				image->SetID2D1Bitmap(bitmap);
 				image->SetIntervalMs(500 + i * 500);
 				image->SetNextIndex(i + 1);
+				image->SetPath(path);
 				animation->PushImageBase(image);
 			}
-			AnimationMgr::Instance().PushAnimation(animation);
+			AnimationMgr::Instance().PushAnimation(WINDOWS_INDEX, animation);
 
 			Obj* obj = new Skill();
 			obj->SetAnimation(animation);
@@ -253,11 +267,11 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 			animation->SetObj(obj);
 			ObjMgr::Instance().AddObj(obj);
 		} while (false);
-		AnimationMgr::Instance().DirtyLayer();
+		AnimationMgr::Instance().DirtyLayer(WINDOWS_INDEX);
 	}
 
 	RigidBodyMgr::Instance().CollisionCheck();
-	AnimationMgr::Instance().Play(now_clock);
+	AnimationMgr::Instance().Play(render_target, WINDOWS_INDEX, now_clock);
 
 	render_target->EndDraw();
 
@@ -272,22 +286,22 @@ void Wnd0::OnKeyDown(WPARAM wParam, LPARAM lParam)
 	{
 	case 'W':
 	{
-		ControlObjMgr::Instance().ChangeObjCoordinate(0, -add);
+		ControlObjMgr::Instance().ChangeObjCoordinate(WINDOWS_INDEX, 0, -add);
 	}
 	break;
 	case 'A':
 	{
-		ControlObjMgr::Instance().ChangeObjCoordinate(-add, 0);
+		ControlObjMgr::Instance().ChangeObjCoordinate(WINDOWS_INDEX, -add, 0);
 	}
 	break;
 	case 'S':
 	{
-		ControlObjMgr::Instance().ChangeObjCoordinate(0, add);
+		ControlObjMgr::Instance().ChangeObjCoordinate(WINDOWS_INDEX, 0, add);
 	}
 	break;
 	case 'D':
 	{
-		ControlObjMgr::Instance().ChangeObjCoordinate(add, 0);
+		ControlObjMgr::Instance().ChangeObjCoordinate(WINDOWS_INDEX, add, 0);
 	}
 	break;
 	}

@@ -69,3 +69,13 @@ bool Obj::IsRigidBody() const
 {
 	return m_is_rigid_body;
 }
+
+void Obj::SetControlIndex(size_t index)
+{
+	m_control_index = index;
+}
+
+size_t Obj::GetControlIndex()
+{
+	return m_control_index;
+}
