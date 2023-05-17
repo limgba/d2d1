@@ -201,7 +201,7 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 			Obj* obj = new Actor();
 			obj->SetIsRigidbody(true);
 			obj->SetAnimation(animation);
-			obj->SetControlIndex(0);
+			obj->SetControlIndex(WINDOWS_INDEX);
 			animation->SetObj(obj);
 			ObjMgr::Instance().AddObj(obj);
 			ControlObjMgr::Instance().PushControlObj(obj);

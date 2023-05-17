@@ -15,6 +15,7 @@ Obj::Obj() : m_animation(nullptr)
 	m_x = 0;
 	m_y = 0;
 	m_is_rigid_body = false;
+	m_control_index = 0;
 }
 
 Obj::~Obj()
@@ -27,7 +28,7 @@ void Obj::OnImpact(Obj* obj)
 
 void Obj::SetAnimation(Animation* animation)
 {
-	if (nullptr == animation)
+	if (nullptr == animation || nullptr != m_animation)
 	{
 		return;
 	}

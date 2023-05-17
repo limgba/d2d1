@@ -19,6 +19,7 @@ public:
 	static AnimationMgr& Instance();
 	void InitAnimationMgr(size_t index);
 	void DestroyAnimationMgr();
+	void DestroyOneAnimationMgr(size_t index);
 
 	void Play(ID2D1HwndRenderTarget* render_target, size_t index, clock_t now_clock);
 	void PushAnimation(size_t index, Animation* animation);

@@ -20,6 +20,7 @@ public:
 	double GetLayer() const;
 	const std::vector<ImageBase*>& GetImageVec();
 	ImageBase* GetImageBase();
+	ImageBase* GetFirstImageBase();
 	
 private:
 	size_t m_index = 0;

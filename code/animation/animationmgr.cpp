@@ -25,10 +25,39 @@ void AnimationMgr::DestroyAnimationMgr()
 		auto& animation_list = animation_data.animation_list;
 		for (size_t i = 0; i < animation_list.size(); ++i)
 		{
+			if (nullptr == animation_list[i])
+			{
+				continue;
+			}
 			delete animation_list[i];
 			animation_list[i] = nullptr;
 		}
+		animation_list.clear();
 	}
+}
+
+void AnimationMgr::DestroyOneAnimationMgr(size_t index)
+{
+	if (index >= m_animation_data_list.size())
+	{
+		return;
+	}
+	auto& animation_data = m_animation_data_list[index];
+	auto& animation_list = animation_data.animation_list;
+	if (animation_list.empty())
+	{
+		return;
+	}
+	for (size_t i = 0; i < animation_list.size(); ++i)
+	{
+		if (nullptr == animation_list[i])
+		{
+			continue;
+		}
+		delete animation_list[i];
+		animation_list[i] = nullptr;
+	}
+	animation_list.clear();
 }
 
 void AnimationMgr::Play(ID2D1HwndRenderTarget* render_target, size_t index, clock_t now_clock)

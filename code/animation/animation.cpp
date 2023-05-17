@@ -133,3 +133,12 @@ ImageBase* Animation::GetImageBase()
 	return m_image_list[m_index];
 }
 
+ImageBase* Animation::GetFirstImageBase()
+{
+	if (m_image_list.empty())
+	{
+		return nullptr;
+	}
+	return m_image_list.front();
+}
+

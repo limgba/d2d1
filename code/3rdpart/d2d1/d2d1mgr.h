@@ -26,6 +26,7 @@ public:
 	int InitD2D1MgrFromWindows(HWND hWnd, size_t index);
 	int LoadAllImage(size_t index);
 	void DestroyD2D1Mgr();
+	void DestroyWindowsDependent(size_t index);
 	int LoadImageFromFile(WindowsDependent* windows_dependent, const std::wstring& file_name);
 
 	ID2D1Factory* GetID2D1Factory();

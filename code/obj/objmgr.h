@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <unordered_map>
+#include <string>
 class Obj;
 
 class ObjMgr
@@ -11,6 +12,7 @@ public:
 	void AddObj(Obj* obj);
 	void DeleteObj(int obj_id);
 	Obj* GetObj(int obj_id);
+	Obj* GetObjByPath(const std::wstring& path);
 
 private:
 	void RemoveLink(Obj* obj);

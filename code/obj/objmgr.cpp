@@ -3,7 +3,9 @@
 #include "rigidbodymgr.h"
 #include "controlobjmgr.h"
 #include "animation/animationmgr.h"
+#include "animation/animation.h"
 #include <algorithm>
+#include "image/imagebase.h"
 
 ObjMgr& ObjMgr::Instance()
 {
@@ -57,6 +59,33 @@ Obj* ObjMgr::GetObj(int obj_id)
 		return nullptr;
 	}
 	return it->second;
+}
+
+Obj* ObjMgr::GetObjByPath(const std::wstring& path)
+{
+	for (auto& pair : m_obj_unordered_map)
+	{
+		Obj* obj = pair.second;
+		if (nullptr == obj)
+		{
+			continue;
+		}
+		Animation* animation = obj->GetAnimation();
+		if (nullptr == animation)
+		{
+			continue;
+		}
+		ImageBase* image_base = animation->GetFirstImageBase();
+		if (nullptr == image_base)
+		{
+			continue;
+		}
+		if (image_base->GetPath() == path)
+		{
+			return obj;
+		}
+	}
+	return nullptr;
 }
 
 void ObjMgr::RemoveLink(Obj* obj)

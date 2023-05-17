@@ -85,6 +85,7 @@ int D2D1Mgr::LoadAllImage(size_t index)
     LoadImageFromFile(windows_dependent, L"background/ndmz.bmp");
     LoadImageFromFile(windows_dependent, L"picture/white.bmp");
     LoadImageFromFile(windows_dependent, L"picture/white1.bmp");
+    LoadImageFromFile(windows_dependent, L"picture/white2.bmp");
     LoadImageFromFile(windows_dependent, L"picture/jiantou0.bmp");
     LoadImageFromFile(windows_dependent, L"picture/jiantou1.bmp");
     LoadImageFromFile(windows_dependent, L"picture/xiaojiantou0.bmp");
@@ -113,6 +114,20 @@ void D2D1Mgr::DestroyD2D1Mgr()
     m_text_format->Release();
     m_write_factory->Release();
     m_factory->Release();
+}
+
+void D2D1Mgr::DestroyWindowsDependent(size_t index)
+{
+    if (index >= m_windows_dependent_list.size())
+    {
+        return;
+	}
+    if (nullptr == m_windows_dependent_list[index])
+    {
+        return;
+    }
+    delete m_windows_dependent_list[index];
+    m_windows_dependent_list[index] = nullptr;
 }
 
 int D2D1Mgr::LoadImageFromFile(WindowsDependent* windows_dependent, const std::wstring& file_name)
