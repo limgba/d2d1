@@ -2,6 +2,7 @@
 #include "obj.h"
 #include "rigidbodymgr.h"
 #include <algorithm>
+#include "camera/cameramgr.h"
 
 ControlObjMgr& ControlObjMgr::Instance()
 {
@@ -43,9 +44,15 @@ void ControlObjMgr::SetObjCoordinate(size_t index, int x, int y)
 	{
 		return;
 	}
+	Camera* camera = CameraMgr::Instance().GetCamera(index);
+	if (nullptr == camera)
+	{
+		return;
+	}
 	obj->SetCoordinate(x, y);
 	RigidBodyMgr::Instance().OnObjMove(obj);
 	RigidBodyMgr::Instance().CollisionCheck();
+	//camera->ResetCoordinate();
 }
 
 void ControlObjMgr::ChangeObjCoordinate(size_t index, int x, int y)
@@ -59,8 +66,23 @@ void ControlObjMgr::ChangeObjCoordinate(size_t index, int x, int y)
 	{
 		return;
 	}
+	Camera* camera = CameraMgr::Instance().GetCamera(index);
+	if (nullptr == camera)
+	{
+		return;
+	}
 	obj->SetCoordinate(obj->x() + x, obj->y() + y);
 	RigidBodyMgr::Instance().OnObjMove(obj);
 	RigidBodyMgr::Instance().CollisionCheck();
+	//camera->ResetCoordinate();
+}
+
+Obj* ControlObjMgr::GetControlObj(size_t index)
+{
+	if (index >= m_control_obj_list.size())
+	{
+		return nullptr;
+	}
+	return m_control_obj_list[index];
 }
 

@@ -11,6 +11,7 @@
 #include "obj/objimpl/actor.h"
 #include "obj/objimpl/skill.h"
 #include "obj/objimpl/monster.h"
+#include "camera/cameramgr.h"
 
 WCHAR Wnd0::szTitle[] = L"d2d1";
 WCHAR Wnd0::szWindowClass[] = L"d2d1";
@@ -62,12 +63,14 @@ void Wnd0::InitWnd(HWND hWnd)
 {
     hThread1 = (HANDLE)_beginthreadex(nullptr, 0, Wnd0::Thread1, hWnd, 0, nullptr);
 	this->OnSetTimer(hWnd);
+	CameraMgr::Instance().PushCamera(new Camera(WINDOWS_INDEX));
 }
 
 void Wnd0::DestroyWnd(HWND hWnd)
 {
 	CloseHandle(hThread1);
 	this->OnKillTimer(hWnd);
+	CameraMgr::Instance().DeleteCamera(WINDOWS_INDEX);
 }
 
 LRESULT CALLBACK Wnd0::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -146,7 +149,7 @@ void Wnd0::OnPaint(HWND hWnd, clock_t now_clock)
 	render_target->Clear(D2D1::ColorF(0.0f, 0.0f, 0.00f));
 
 	// Draw Ellipse  
-	D2D1_SIZE_F size = render_target->GetSize();
+	//D2D1_SIZE_F size = render_target->GetSize();
 
 	// Draw Image
 	if (0 == m_last_clock)

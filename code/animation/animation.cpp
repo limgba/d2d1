@@ -3,6 +3,8 @@
 #include "obj/rigidbodymgr.h"
 #include "obj/obj.h"
 #include "3rdpart/d2d1/d2d1mgr.h"
+#include "obj/controlobjmgr.h"
+#include "camera/cameramgr.h"
 
 Animation::~Animation()
 {
@@ -51,7 +53,7 @@ void Animation::SetLoop(bool is_loop)
 	m_is_loop = is_loop;
 }
 
-void Animation::Play(ID2D1HwndRenderTarget* render_target, clock_t now_clock)
+void Animation::Play(ID2D1HwndRenderTarget* render_target, int index, clock_t now_clock)
 {
 	if (nullptr == render_target)
 	{
@@ -68,6 +70,11 @@ void Animation::Play(ID2D1HwndRenderTarget* render_target, clock_t now_clock)
 	}
 	ID2D1Bitmap* bitmap = image_base->GetID2D1Bitmap();
 	if (nullptr == bitmap)
+	{
+		return;
+	}
+	Camera* camera = CameraMgr::Instance().GetCamera(index);
+	if (nullptr == camera)
 	{
 		return;
 	}
@@ -102,10 +109,31 @@ void Animation::Play(ID2D1HwndRenderTarget* render_target, clock_t now_clock)
 		}
 	}
 
+	camera->ResetCoordinate();
+	D2D1_SIZE_U render_size = render_target->GetPixelSize();
 	D2D1_SIZE_U size = bitmap->GetPixelSize();
+	int camera_x = camera->x();
+	int camera_y = camera->y();
+	int origin_x = camera_x - render_size.width / 2;
+	int origin_y = camera_y - render_size.height / 2;
 	int x = m_obj->x();
 	int y = m_obj->y();
-	D2D1_RECT_F imgr = { x, y, x + size.width, y + size.height };
+	x -= origin_x;
+	y -= origin_y;
+	int width = x + size.width;
+	int height = y + size.height;
+	if (width < 0 || height < 0)
+	{
+		return;
+	}
+	int obj_type = m_obj->GetObjType();
+	int render_width = origin_x + render_size.width;
+	int render_height = origin_y + render_size.height;
+	if (x > render_width || y > render_height)
+	{
+		return;
+	}
+	D2D1_RECT_F imgr = { x, y, width, height };
 	render_target->DrawBitmap(bitmap, imgr);
 }
 

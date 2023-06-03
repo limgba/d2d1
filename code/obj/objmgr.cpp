@@ -61,6 +61,23 @@ Obj* ObjMgr::GetObj(int obj_id)
 	return it->second;
 }
 
+Obj* ObjMgr::GetObjByType(int obj_type)
+{
+	for (auto& pair : m_obj_unordered_map)
+	{
+		Obj* obj = pair.second;
+		if (nullptr == obj)
+		{
+			continue;
+		}
+		if (obj->GetObjType() == obj_type)
+		{
+			return obj;
+		}
+	}
+	return nullptr;
+}
+
 Obj* ObjMgr::GetObjByPath(const std::wstring& path)
 {
 	for (auto& pair : m_obj_unordered_map)

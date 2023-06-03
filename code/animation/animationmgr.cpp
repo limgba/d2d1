@@ -77,7 +77,7 @@ void AnimationMgr::Play(ID2D1HwndRenderTarget* render_target, size_t index, cloc
 	auto& animation_list = animation_data.animation_list;
 	for (auto* animation : animation_list)
 	{
-		animation->Play(render_target, now_clock);
+		animation->Play(render_target, index, now_clock);
 	}
 }
 

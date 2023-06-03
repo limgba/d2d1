@@ -12,6 +12,7 @@ public:
 	void AddObj(Obj* obj);
 	void DeleteObj(int obj_id);
 	Obj* GetObj(int obj_id);
+	Obj* GetObjByType(int obj_type);
 	Obj* GetObjByPath(const std::wstring& path);
 
 private:
