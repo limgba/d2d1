@@ -28,31 +28,54 @@ void Camera::ResetCoordinate()
 	{
 		return;
 	}
-	Animation* animation = scene->GetAnimation();
-	if (nullptr == animation)
+	D2D1_SIZE_U scene_size;
 	{
-		return;
+		Animation* animation = scene->GetAnimation();
+		if (nullptr == animation)
+		{
+			return;
+		}
+		ImageBase* image_base = animation->GetImageBase();
+		if (nullptr == image_base)
+		{
+			return;
+		}
+		ID2D1Bitmap* bitmap = image_base->GetID2D1Bitmap();
+		if (nullptr == bitmap)
+		{
+			return;
+		}
+		scene_size = bitmap->GetPixelSize();
 	}
-	ImageBase* image_base = animation->GetImageBase();
-	if (nullptr == image_base)
-	{
-		return;
-	}
-	ID2D1Bitmap* bitmap = image_base->GetID2D1Bitmap();
-	if (nullptr == bitmap)
-	{
-		return;
-	}
+
 	Obj* control_obj = ControlObjMgr::Instance().GetControlObj(m_index);
 	if (nullptr == control_obj)
 	{
 		return;
 	}
+	D2D1_SIZE_U control_size;
+	{
+		Animation* animation = control_obj->GetAnimation();
+		if (nullptr == animation)
+		{
+			return;
+		}
+		ImageBase* image_base = animation->GetImageBase();
+		if (nullptr == image_base)
+		{
+			return;
+		}
+		ID2D1Bitmap* bitmap = image_base->GetID2D1Bitmap();
+		if (nullptr == bitmap)
+		{
+			return;
+		}
+		control_size = bitmap->GetPixelSize();
+	}
 	D2D1_SIZE_U render_size = render_target->GetPixelSize();
-	D2D1_SIZE_U scene_size = bitmap->GetPixelSize();
-	UINT32 x = control_obj->x();
-	UINT32 y = control_obj->y();
-	if (x < render_size.width / 2)
+	UINT32 x = control_obj->x() + control_size.width / 2;
+	UINT32 y = control_obj->y() + control_size.height / 2;
+	if (x < render_size.width / 2 || x > INT_MAX)
 	{
 		x = render_size.width / 2;
 	}
@@ -60,7 +83,7 @@ void Camera::ResetCoordinate()
 	{
 		x = scene_size.width - render_size.width / 2;
 	}
-	if (y < render_size.height / 2)
+	if (y < render_size.height / 2 || y > INT_MAX)
 	{
 		y = render_size.height / 2;
 	}
