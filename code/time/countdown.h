@@ -14,11 +14,12 @@ public:
 	void RunBeginFunc();
 	void RunLoopFunc(clock_t time);
 	void RunEndFunc();
-	clock_t GetIntervalTime();
+	clock_t GetNextRunTime() const;
 private:
 	std::function<void()> m_begin_func;
 	std::function<void(clock_t)> m_loop_func;
 	std::function<void()> m_end_func;
-	clock_t m_interval_time;
-	int m_loop_times;
+	clock_t m_next_run_time = 0;
+	clock_t m_interval_time = 0;
+	int m_loop_times = 0;
 };

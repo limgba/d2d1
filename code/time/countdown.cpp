@@ -33,6 +33,7 @@ void CountDown::RunLoopFunc(clock_t time)
 		return;
 	}
 	m_loop_func(time);
+	m_next_run_time = time + m_interval_time;
 }
 
 void CountDown::RunEndFunc()
@@ -44,7 +45,7 @@ void CountDown::RunEndFunc()
 	m_end_func();
 }
 
-clock_t CountDown::GetIntervalTime()
+clock_t CountDown::GetNextRunTime() const
 {
-	return m_interval_time;
+	return m_next_run_time;
 }
