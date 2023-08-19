@@ -7,6 +7,7 @@ class CountDown
 public:
 	CountDown() = default;
 	~CountDown() = default;
+	void Update(clock_t time);
 	void RegBegin(std::function<void()> func);
 	void RegLoop(clock_t interval_time, int loop_times, std::function<void(clock_t)> func);
 	void RegEnd(std::function<void()> func);
@@ -15,6 +16,7 @@ public:
 	void RunLoopFunc(clock_t time);
 	void RunEndFunc();
 	clock_t GetNextRunTime() const;
+	bool IsEnd() const;
 private:
 	std::function<void()> m_begin_func;
 	std::function<void(clock_t)> m_loop_func;

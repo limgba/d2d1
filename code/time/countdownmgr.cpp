@@ -2,6 +2,11 @@
 #include "countdown.h"
 #include <algorithm>
 
+bool SortCountDown(CountDown* l, CountDown* r)
+{
+	return l->GetNextRunTime() < r->GetNextRunTime();
+}
+
 CountDownMgr& CountDownMgr::Instance()
 {
 	static CountDownMgr mgr;
@@ -30,15 +35,15 @@ void CountDownMgr::Update(clock_t time)
 	{
 		return;
 	}
-	if (time <= count_down->GetNextRunTime())
+	count_down->Update(time);
+	if (count_down->IsEnd())
 	{
-		return;
+		auto it = std::remove(m_count_down_vec.begin(), m_count_down_vec.end(), count_down);
+		m_count_down_vec.erase(it, m_count_down_vec.end());
 	}
-	count_down->RunLoopFunc(time);
-	std::sort(m_count_down_vec.begin(), m_count_down_vec.end(), SortCountDown);
+	else
+	{
+		std::sort(m_count_down_vec.begin(), m_count_down_vec.end(), SortCountDown);
+	}
 }
 
-bool SortCountDown(CountDown* l, CountDown* r)
-{
-	return l->GetNextRunTime() < r->GetNextRunTime();
-}
