@@ -1,6 +1,7 @@
 #include <windows.h>
 #include "windows/wnd0.h"
 #include "windows/wnd1.h"
+#include "windows/wndmgr.h"
 #include "3rdpart/d2d1/d2d1mgr.h"
 #include "animation/animationmgr.h"
 #include "obj/objmgr.h"
@@ -67,9 +68,6 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance; // 将实例句柄存储在全局变量中
-
-    BOOL ret0 = Wnd0::InitInstance(hInstance, nCmdShow);
-    BOOL ret1 = Wnd1::InitInstance(hInstance, nCmdShow);
-    return ret0 && ret1;
+    return WndMgr::Instance().InitInstance(hInstance, nCmdShow);
 }
 
