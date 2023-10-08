@@ -1,4 +1,5 @@
 #include "wnd0.h"
+#include "wndmgr.h"
 #include <process.h>
 #include "3rdpart/d2d1/d2d1mgr.h"
 #include "image/imagebase.h"
@@ -13,8 +14,6 @@
 #include "obj/objimpl/monster.h"
 #include "camera/cameramgr.h"
 
-WCHAR Wnd0::szTitle[] = L"d2d1";
-WCHAR Wnd0::szWindowClass[] = L"d2d1";
 
 Wnd0& Wnd0::Instance()
 {
@@ -22,59 +21,44 @@ Wnd0& Wnd0::Instance()
 	return instance;
 }
 
-BOOL Wnd0::InitInstance(HINSTANCE hInstance, int nCmdShow)
+
+const WCHAR* Wnd0::GetTitle()
 {
-	HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-
-	if (!hWnd)
-	{
-		return FALSE;
-	}
-
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
-
-	return TRUE;
+	return L"d2d1_0";
 }
 
-ATOM Wnd0::MyRegisterClass(HINSTANCE hInstance)
+const WCHAR* Wnd0::GetWindowsClass()
 {
-	WNDCLASSEXW wcex;
-
-	wcex.cbSize = sizeof(WNDCLASSEX);
-
-	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = Wnd0::WndProc;
-	wcex.cbClsExtra = 0;
-	wcex.cbWndExtra = 0;
-	wcex.hInstance = hInstance;
-	wcex.hIcon = nullptr;
-	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszMenuName = nullptr;
-	wcex.lpszClassName = szWindowClass;
-	wcex.hIconSm = nullptr;
-
-	return RegisterClassExW(&wcex);
+	return L"d2d1_0";
 }
 
-void Wnd0::InitWnd(HWND hWnd)
+_beginthreadex_proc_type Wnd0::GetThreadProc()
 {
-    hThread1 = (HANDLE)_beginthreadex(nullptr, 0, Wnd0::Thread1, hWnd, 0, nullptr);
-	this->OnSetTimer(hWnd);
-	CameraMgr::Instance().PushCamera(new Camera(WINDOWS_INDEX));
+	return Wnd0::ThreadProc;
 }
 
-void Wnd0::DestroyWnd(HWND hWnd)
+size_t Wnd0::GetWindowsIndex()
 {
-	CloseHandle(hThread1);
-	this->OnKillTimer(hWnd);
-	CameraMgr::Instance().DeleteCamera(WINDOWS_INDEX);
+	return WINDOWS_INDEX;
+}
+
+UINT_PTR Wnd0::GetThreadId_1()
+{
+	return TIMER_ID_1;
+}
+
+WNDPROC Wnd0::GetWNDPROC()
+{
+	return Wnd0::WndProc;
 }
 
 LRESULT CALLBACK Wnd0::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	Wnd* wnd = WndMgr::Instance().GetWnd(WINDOWS_INDEX);
+	if (nullptr == wnd)
+	{
+		return 0;
+	}
     switch (message)
     {
     case WM_PAINT:
@@ -82,7 +66,7 @@ LRESULT CALLBACK Wnd0::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
         PAINTSTRUCT ps;
 		clock_t now_clock = clock();
         BeginPaint(hWnd, &ps);
-        Wnd0::Instance().OnPaint(hWnd, now_clock);
+        wnd->OnPaint(hWnd, now_clock);
         EndPaint(hWnd, &ps);
     }
     break;
@@ -92,12 +76,12 @@ LRESULT CALLBACK Wnd0::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		D2D1Mgr::Instance().InitD2D1MgrFromWindows(hWnd, WINDOWS_INDEX);
 		D2D1Mgr::Instance().LoadAllImage(WINDOWS_INDEX);
 		AnimationMgr::Instance().InitAnimationMgr(WINDOWS_INDEX);
-        Wnd0::Instance().InitWnd(hWnd);
+        wnd->InitWnd(hWnd);
     }
     break;
     case WM_DESTROY:
     {
-        Wnd0::Instance().DestroyWnd(hWnd);
+        wnd->DestroyWnd(hWnd);
 		D2D1Mgr::Instance().DestroyD2D1Mgr();
 		AnimationMgr::Instance().DestroyAnimationMgr();
 		ObjMgr::Instance().DeleteAllObj();
@@ -106,12 +90,12 @@ LRESULT CALLBACK Wnd0::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
     break;
     case WM_KEYDOWN:
     {
-        Wnd0::Instance().OnKeyDown(wParam, lParam);
+        wnd->OnKeyDown(wParam, lParam);
     }
     break;
     case WM_TIMER:
     {
-        Wnd0::Instance().OnTimer(hWnd, wParam, lParam);
+        wnd->OnTimer(hWnd, wParam, lParam);
     }
     break;
     default:
@@ -120,7 +104,7 @@ LRESULT CALLBACK Wnd0::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 	return 0;
 }
 
-unsigned Wnd0::Thread1(void* argv)
+unsigned Wnd0::ThreadProc(void* argv)
 {
 	while (true)
 	{
@@ -308,16 +292,6 @@ void Wnd0::OnKeyDown(WPARAM wParam, LPARAM lParam)
 	}
 	break;
 	}
-}
-
-void Wnd0::OnSetTimer(HWND hWnd)
-{
-	SetTimer(hWnd, TIMER_ID_1, 55, nullptr);
-}
-
-void Wnd0::OnKillTimer(HWND hWnd)
-{
-	KillTimer(hWnd, TIMER_ID_1);
 }
 
 void Wnd0::OnTimer(HWND hWnd, WPARAM wParam, LPARAM lParam)

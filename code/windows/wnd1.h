@@ -11,6 +11,8 @@ public:
 	static Wnd1& Instance();
 	static BOOL InitInstance(HINSTANCE hInstance, int nCmdShow);
 	static ATOM MyRegisterClass(HINSTANCE hInstance);
+	virtual const WCHAR* GetTitle();
+	virtual const WCHAR* GetWindowsClass();
 	void InitWnd(HWND hWnd);
 	void DestroyWnd(HWND hWnd);
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

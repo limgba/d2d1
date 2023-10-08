@@ -20,6 +20,15 @@ WndMgr& WndMgr::Instance()
 	return instance;
 }
 
+Wnd* WndMgr::GetWnd(size_t index)
+{
+	if (index >= m_wnd_vector.size())
+	{
+		return nullptr;
+	}
+	return m_wnd_vector[index];
+}
+
 BOOL WndMgr::InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	for (Wnd* wnd : m_wnd_vector)

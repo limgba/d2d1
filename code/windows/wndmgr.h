@@ -10,6 +10,7 @@ class WndMgr
 {
 public:
 	static WndMgr& Instance();
+	Wnd* GetWnd(size_t index);
 	BOOL InitInstance(HINSTANCE hInstance, int nCmdShow);
 	ATOM MyRegisterClass(HINSTANCE hInstance);
 	void InitWnd(HWND hWnd);

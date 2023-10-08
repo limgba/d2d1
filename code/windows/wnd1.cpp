@@ -22,41 +22,14 @@ Wnd1& Wnd1::Instance()
 	return instance;
 }
 
-BOOL Wnd1::InitInstance(HINSTANCE hInstance, int nCmdShow)
+const WCHAR* Wnd1::GetTitle()
 {
-	HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-
-	if (!hWnd)
-	{
-		return FALSE;
-	}
-
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
-
-	return TRUE;
+	return L"d2d1_0";
 }
 
-ATOM Wnd1::MyRegisterClass(HINSTANCE hInstance)
+const WCHAR* Wnd1::GetWindowsClass()
 {
-	WNDCLASSEXW wcex;
-
-	wcex.cbSize = sizeof(WNDCLASSEX);
-
-	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = Wnd1::WndProc;
-	wcex.cbClsExtra = 0;
-	wcex.cbWndExtra = 0;
-	wcex.hInstance = hInstance;
-	wcex.hIcon = nullptr;
-	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszMenuName = nullptr;
-	wcex.lpszClassName = szWindowClass;
-	wcex.hIconSm = nullptr;
-
-	return RegisterClassExW(&wcex);
+	return L"d2d1_0";
 }
 
 void Wnd1::InitWnd(HWND hWnd)
