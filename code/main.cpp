@@ -60,9 +60,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    ATOM ret0 = Wnd0::MyRegisterClass(hInstance);
-    ATOM ret1 = Wnd1::MyRegisterClass(hInstance);
-    return ret0 && ret1;
+    return WndMgr::Instance().MyRegisterClass(hInstance);
 }
 
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
