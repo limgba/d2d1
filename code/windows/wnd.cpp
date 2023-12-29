@@ -280,12 +280,10 @@ void Wnd::OnPaint(HWND hWnd, clock_t now_clock)
 				obj->SetAnimation(animation);
 				obj->SetCoordinate(200, 200);
 				obj->SetIsRigidbody(true);
-				obj->SetControlIndex(1);
 				animation->SetObj(obj);
 				ObjMgr::Instance().AddObj(obj);
-				ControlObjMgr::Instance().PushControlObj(obj);
 			}
-			else if (1 == WINDOWS_INDEX)
+			else
 			{
 				Obj* obj = ObjMgr::Instance().GetObjByPath(path);
 				if (nullptr == obj)
@@ -293,6 +291,8 @@ void Wnd::OnPaint(HWND hWnd, clock_t now_clock)
 					break;
 				}
 				animation->SetObj(obj);
+				obj->SetControlIndex(WINDOWS_INDEX);
+				ControlObjMgr::Instance().PushControlObj(obj);
 			}
 		} while (false);
 

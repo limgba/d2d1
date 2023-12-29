@@ -5,6 +5,7 @@
 #include "wnd.h"
 #include "wnddecl.h"
 
-WND_DECLARE(1)
+
+WND_DECLARE(3)
 	virtual void OnKeyDown(WPARAM wParam, LPARAM lParam);
 WND_DECLARE_END

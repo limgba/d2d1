@@ -2,6 +2,8 @@
 #include "wnd.h"
 #include "wnd0.h"
 #include "wnd1.h"
+#include "wnd2.h"
+#include "wnd3.h"
 
 WndMgr& WndMgr::Instance()
 {
@@ -55,6 +57,8 @@ ATOM WndMgr::MyRegisterClass(HINSTANCE hInstance)
 {
 	m_wnd_vector.push_back(new Wnd0());
 	m_wnd_vector.push_back(new Wnd1());
+	m_wnd_vector.push_back(new Wnd2());
+	m_wnd_vector.push_back(new Wnd3());
 	ATOM ret = 0;
 	for (Wnd* wnd : m_wnd_vector)
 	{
