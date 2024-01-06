@@ -7,5 +7,4 @@
 
 
 WND_DECLARE(3)
-	virtual void OnKeyDown(WPARAM wParam, LPARAM lParam);
 WND_DECLARE_END

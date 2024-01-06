@@ -24,6 +24,92 @@ Wnd::Wnd(size_t windows_index)
 
 void Wnd::OnKeyDown(WPARAM wParam, LPARAM lParam)
 {
+	int add = 10;
+	switch (wParam)
+	{
+	case 'W':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(0, 0, -add);
+	}
+	break;
+	case 'A':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(0, -add, 0);
+	}
+	break;
+	case 'S':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(0, 0, add);
+	}
+	break;
+	case 'D':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(0, add, 0);
+	}
+	break;
+	case 'I':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(1, 0, -add);
+	}
+	break;
+	case 'J':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(1, -add, 0);
+	}
+	break;
+	case 'K':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(1, 0, add);
+	}
+	break;
+	case 'L':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(1, add, 0);
+	}
+	break;
+
+	case '3':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(2, 0, -add);
+	}
+	break;
+	case '1':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(2, -add, 0);
+	}
+	break;
+	case '2':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(2, 0, add);
+	}
+	break;
+	case '4':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(2, add, 0);
+	}
+	break;
+
+	case '9':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(3, 0, -add);
+	}
+	break;
+	case '7':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(3, -add, 0);
+	}
+	break;
+	case '8':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(3, 0, add);
+	}
+	break;
+	case '0':
+	{
+		ControlObjMgr::Instance().ChangeObjCoordinate(3, add, 0);
+	}
+	break;
+	}
 }
 
 void Wnd::OnTimer(HWND hWnd, WPARAM wParam, LPARAM lParam)
