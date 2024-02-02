@@ -56,9 +56,9 @@ BOOL WndMgr::InitInstance(HINSTANCE hInstance, int nCmdShow)
 ATOM WndMgr::MyRegisterClass(HINSTANCE hInstance)
 {
 	m_wnd_vector.push_back(new Wnd0());
-	m_wnd_vector.push_back(new Wnd1());
-	m_wnd_vector.push_back(new Wnd2());
-	m_wnd_vector.push_back(new Wnd3());
+	//m_wnd_vector.push_back(new Wnd1());
+	//m_wnd_vector.push_back(new Wnd2());
+	//m_wnd_vector.push_back(new Wnd3());
 	ATOM ret = 0;
 	for (Wnd* wnd : m_wnd_vector)
 	{

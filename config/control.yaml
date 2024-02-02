@@ -1,0 +1,10 @@
+player1: 
+	up: w
+	left: a
+	down: s
+	right: d
+player2: 
+	up: i
+	left: j
+	down: k
+	right: l

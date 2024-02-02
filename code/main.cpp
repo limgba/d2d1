@@ -3,6 +3,7 @@
 #include "windows/wnd1.h"
 #include "windows/wndmgr.h"
 #include "3rdpart/d2d1/d2d1mgr.h"
+#include "3rdpart/yaml/yaml.h"
 #include "animation/animationmgr.h"
 #include "obj/objmgr.h"
 
@@ -21,12 +22,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
+    int ret = 0;
+    ret = yaml::ReadFileList();
+    if (ret < 0)
+    {
+        return -1000000 + ret;
+    }
+
     MyRegisterClass(hInstance);
 
     // 执行应用程序初始化:
     if (!InitInstance(hInstance, nCmdShow))
     {
-        return FALSE;
+        return -2000000;
     }
 
     MSG msg;
