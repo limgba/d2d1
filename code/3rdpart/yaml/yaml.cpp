@@ -127,8 +127,21 @@ int yaml::WriteFile(yaml* _yaml, const std::string& path)
 	{
 		return -2;
 	}
+	int depth = 0;
+	yaml::WriteFileStr(_yaml, depth);
 
+	ofs.close();
 	return 0;
+}
+
+int yaml::WriteFileStr(yaml* _yaml, int& depth)
+{
+	if (nullptr == _yaml)
+	{
+		return -1;
+	}
+
+
 }
 
 int yaml::ReadFileName(const std::string& str)

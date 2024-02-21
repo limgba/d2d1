@@ -44,6 +44,7 @@ public:
 	static int ReadFileList();
 	static int ReadFile(const std::string& str);
 	static int WriteFile(yaml* _yaml, const std::string& path);
+	static int WriteFileStr(yaml* _yaml, int& depth);
 	static int ReadFileName(const std::string& str);
 	static int ReadLine(int line, const std::string& str);
 	static int ReadHash(std::unordered_map<std::string, yaml*>* hash, const std::string& key, const std::string& str);
