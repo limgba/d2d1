@@ -8,3 +8,36 @@ player2:
 	left: j
 	down: k
 	right: l
+ff: 
+	ff: aa
+	dd: 1
+	kk: 
+		- 2
+		- ff
+kk: 
+	- 1
+	- ss
+	- 
+		- 2
+		- 3
+aa: 
+	bb: 
+		cc: 
+			dd: d
+
+- 
+	- 
+		- 
+			- 
+				- 1
+- 
+	33: 
+		ss: 
+			- 
+				- 2
+cc: 
+	- 
+		cc: 
+			- 
+				cc: 
+					- f
